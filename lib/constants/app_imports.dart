@@ -9,6 +9,12 @@ export 'package:chat_bot_frontend/constants/app_strings.dart';
 export 'package:chat_bot_frontend/constants/app_assets.dart';
 export 'package:chat_bot_frontend/constants/app_colors.dart';
 
+// Global
+export 'package:chat_bot_frontend/global/widgets/reuse_text.dart';
+export 'package:chat_bot_frontend/global/widgets/custom_text_field.dart';
+export 'package:chat_bot_frontend/global/widgets/custom_app_button.dart';
+export 'package:chat_bot_frontend/global/widgets/custom_icon_button.dart';
+
 // Packages
 export 'package:dio/dio.dart';
 export 'package:shared_preferences/shared_preferences.dart';
@@ -24,6 +30,7 @@ export 'package:chat_bot_frontend/managers/network_manager.dart';
 
 // Utilities
 export 'package:chat_bot_frontend/utilities/utils.dart';
+export 'package:chat_bot_frontend/utilities/extensions.dart';
 
 // Repositories
 export 'package:chat_bot_frontend/repositories/login_repository.dart';

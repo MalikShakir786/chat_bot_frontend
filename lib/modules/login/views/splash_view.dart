@@ -71,9 +71,12 @@ class _SplashViewState extends State<SplashView>
                 scale: _scaleAnimation,
                 child: SizedBox(
                   width: 150.w,
-                  child: Image.asset(
-                    AppAssets.appLogo,
-                    fit: BoxFit.contain,
+                  child: Hero(
+                    tag: 'logo',
+                    child: Image.asset(
+                      AppAssets.appLogo,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
               ),
