@@ -29,4 +29,8 @@ class AppAssets {
   static const String upload = 'assets/icons/upload.png';
   static const String user = 'assets/icons/user.png';
 
+  // Images
+  static const String loginBg = 'assets/images/login_bg.png';
+
+
 }

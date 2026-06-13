@@ -9,15 +9,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OKToast(
-      child: GetMaterialApp(
-        title: 'Flutter Demo',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+    return ScreenUtilInit(
+      designSize: Size(375, 841),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      child: OKToast(
+        child: GetMaterialApp(
+          title: 'Flutter Demo',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+          ),
+          initialRoute: AppPages.INITIAL,
+          getPages: AppPages.routes,
         ),
-        initialRoute: AppPages.INITIAL,
-        getPages: AppPages.routes,
       ),
     );
   }
