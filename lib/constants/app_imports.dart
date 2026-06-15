@@ -8,12 +8,14 @@ export 'package:chat_bot_frontend/constants/app_urls.dart';
 export 'package:chat_bot_frontend/constants/app_strings.dart';
 export 'package:chat_bot_frontend/constants/app_assets.dart';
 export 'package:chat_bot_frontend/constants/app_colors.dart';
+export 'package:chat_bot_frontend/constants/app_enums.dart';
 
 // Global
 export 'package:chat_bot_frontend/global/widgets/reuse_text.dart';
 export 'package:chat_bot_frontend/global/widgets/custom_text_field.dart';
 export 'package:chat_bot_frontend/global/widgets/custom_app_button.dart';
 export 'package:chat_bot_frontend/global/widgets/custom_icon_button.dart';
+export 'package:chat_bot_frontend/global/widgets/custom_app_bar.dart';
 
 // Packages
 export 'package:dio/dio.dart';

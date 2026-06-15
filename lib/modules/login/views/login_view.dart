@@ -71,6 +71,9 @@ class LoginView extends StatelessWidget {
                 SizedBox(height: 25.h,),
                 CustomAppButton(
                   text: 'Login',
+                  onTap: (){
+                    Get.toNamed(Routes.HOME);
+                  },
                 ),
                 SizedBox(height: 40.h,),
                 Stack(

@@ -25,3 +25,36 @@ extension InkTapExtension on Widget {
     );
   }
 }
+
+extension UploadTimeExtension on DateTime {
+  String get timeAgoOrDate {
+    final now = DateTime.now();
+    final difference = now.difference(this);
+
+    if (difference.inMinutes < 1) {
+      return "Just now";
+    }
+
+    if (difference.inMinutes < 60) {
+      return "${difference.inMinutes} min ago";
+    }
+
+    if (difference.inHours < 24) {
+      return "${difference.inHours} h ago";
+    }
+
+    // After 24 hours → show date + time
+    return "${_formatDate(this)}";
+  }
+
+  String _formatDate(DateTime date) {
+    final day = date.day.toString().padLeft(2, '0');
+    final month = date.month.toString().padLeft(2, '0');
+    final year = date.year;
+
+    final hour = date.hour.toString().padLeft(2, '0');
+    final minute = date.minute.toString().padLeft(2, '0');
+
+    return "$day-$month-$year $hour:$minute";
+  }
+}

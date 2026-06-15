@@ -1,6 +1,17 @@
+import 'package:flutter/services.dart';
+
 import 'constants/app_imports.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle(
+      statusBarColor: Colors.white,
+      statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.dark,
+    ),
+  );
   runApp(const MyApp());
 }
 
@@ -17,9 +28,6 @@ class MyApp extends StatelessWidget {
         child: GetMaterialApp(
           title: 'Flutter Demo',
           debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            colorScheme: .fromSeed(seedColor: Colors.deepPurple),
-          ),
           initialRoute: AppPages.INITIAL,
           getPages: AppPages.routes,
         ),

@@ -9,6 +9,7 @@ class CustomIconButton extends StatelessWidget {
   final bool isGradient;
   final EdgeInsets? padding;
   final Color? iconColor;
+  final Color? bgColor;
 
   const CustomIconButton({
     super.key,
@@ -19,7 +20,8 @@ class CustomIconButton extends StatelessWidget {
     this.isBackground = true,
     this.isGradient = false,
     this.padding,
-    this.iconColor
+    this.iconColor,
+    this.bgColor,
   });
 
   @override
@@ -29,14 +31,10 @@ class CustomIconButton extends StatelessWidget {
         Ink(
           padding: padding ?? EdgeInsets.all(10.sp),
           decoration: BoxDecoration(
-            color: isBackground ? Colors.grey.shade200 : Colors.transparent,
+            color: isBackground ? bgColor ?? Colors.grey.shade200 :  Colors.transparent,
             shape: BoxShape.circle,
             gradient: isGradient
-                ? LinearGradient(
-              colors: [Colors.black, AppColors.primary],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            )
+                ? AppColors.primaryGradient
                 : null,
           ),
           child: Image.asset(iconPath, height: size.h, width: size.h, color: isGradient? Colors.white: iconColor,),
