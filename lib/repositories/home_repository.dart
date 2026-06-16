@@ -1,30 +1,35 @@
-import 'package:chat_bot_frontend/models/user_model.dart';
+import 'package:chat_bot_frontend/models/document_model.dart';
 import '../constants/app_imports.dart';
+
+List<DocumentModel> parseDocumentModelList(List<dynamic> json) {
+  return json.map((j)=> DocumentModel.fromJson(j)).toList();
+}
 
 class HomeRepository {
   final _apiService = NetworkManager();
 
   // Get Token
-  Future<UserModel?> loginApi(var data) async {
+  Future<List<DocumentModel>> getAllDocumentsApi({var params}) async {
     try {
       final response = await _apiService.callApi(
-        urlEndPoint: AppUrls.login,
-        body: data,
-        method: HttpMethod.Post,
+        urlEndPoint: AppUrls.documentGetAll,
+        queryParameters: params,
+        method: HttpMethod.Get,
         withoutLoader: true,
       );
 
       if (response != null &&
           response.statusCode == 200 &&
           response.data != null) {
-        return await compute<Map<String, dynamic>, UserModel>(parseUserModel, response.data['result']);
+        return await compute<List<dynamic>, List<DocumentModel>>(parseDocumentModelList, response.data['data']);
       }
 
-      Utils.toastMessage(response?.data['error']['message']);
-    } catch (e) {
+      Utils.toastMessage(response?.data['error_code']);
+    } catch (e, stk) {
+      print(stk);
       print("Error in api: $e");
       Utils.toastMessage(AppStrings.errorApiOccurred);
     }
-    return null;
+    return [];
   }
 }

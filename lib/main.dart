@@ -12,6 +12,9 @@ void main() {
       statusBarBrightness: Brightness.dark,
     ),
   );
+
+  PrefManager.init();
+
   runApp(const MyApp());
 }
 

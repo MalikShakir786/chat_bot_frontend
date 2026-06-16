@@ -5,7 +5,7 @@ class Utils {
     child: SizedBox(
       height: 25,
       width: 25,
-      child: CircularProgressIndicator(color: Colors.white),
+      child: CircularProgressIndicator(color: AppColors.primary),
     ),
   );
 

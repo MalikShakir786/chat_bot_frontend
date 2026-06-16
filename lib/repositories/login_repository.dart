@@ -21,11 +21,12 @@ class LoginRepository {
       if (response != null &&
           response.statusCode == 200 &&
           response.data != null) {
-        return await compute<Map<String, dynamic>, UserModel>(parseUserModel, response.data['result']);
+        return await compute<Map<String, dynamic>, UserModel>(parseUserModel, response.data['data']);
       }
 
-      Utils.toastMessage(response?.data['error']['message']);
-    } catch (e) {
+      Utils.toastMessage(response?.data['error_code']);
+    } catch (e, stk) {
+      print(stk);
       print("Error in api: $e");
       Utils.toastMessage(AppStrings.errorApiOccurred);
     }

@@ -1,6 +1,6 @@
 class AppUrls {
 
-  static const baseUrl = 'http://localhost:5432';
+  static const baseUrl = 'http://127.0.0.1:8000';
   static const routeUrl = '/api/v1';
 
   // Auth
