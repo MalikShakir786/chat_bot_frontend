@@ -5,10 +5,14 @@ List<DocumentModel> parseDocumentModelList(List<dynamic> json) {
   return json.map((j)=> DocumentModel.fromJson(j)).toList();
 }
 
+DocumentModel parseDocumentModel(Map<String, dynamic> json) {
+  return DocumentModel.fromJson(json);
+}
+
 class HomeRepository {
   final _apiService = NetworkManager();
 
-  // Get Token
+  // Get All Documents
   Future<List<DocumentModel>> getAllDocumentsApi({var params}) async {
     try {
       final response = await _apiService.callApi(
@@ -32,4 +36,33 @@ class HomeRepository {
     }
     return [];
   }
-}
+
+  // Upload File Api
+  Future<DocumentModel?> uploadFileApi({FormData? params}) async {
+    try {
+      final response = await _apiService.callApi(
+        urlEndPoint: AppUrls.documentUpload,
+        method: HttpMethod.Post,
+        isFormDataRequest: true,
+        formData: params,
+        withoutLoader: false,
+      );
+
+      if (response != null &&
+          response.statusCode == 200 &&
+          response.data != null) {
+        return await compute<Map<String, dynamic>, DocumentModel>(
+          parseDocumentModel,
+          response.data['data'],
+        );
+      }
+
+      Utils.toastMessage(response?.data['error_code']);
+    } catch (e, stk) {
+      print(stk);
+      print("Error in api: $e");
+      Utils.toastMessage(AppStrings.errorApiOccurred);
+    }
+
+    return null;
+  }}

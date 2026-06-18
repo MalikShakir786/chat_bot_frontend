@@ -40,6 +40,7 @@ dependencies:
   connectivity_plus: ^7.1.1
   oktoast: ^3.4.0
   flutter_screenutil: ^5.9.3
+  file_picker: ^11.0.2
 
 dev_dependencies:
   flutter_test:

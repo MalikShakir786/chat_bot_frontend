@@ -66,17 +66,23 @@ class _HomeViewState extends State<HomeView> {
                       ),
                     );
                   }
-                  return ListView.builder(
-                      itemCount: homeCon.documents.length,
-                      itemBuilder: (context, index) {
-                        var doc = homeCon.documents[index];
-                        return DocumentBox(title: doc.filename ?? '',
-                          fileSize: 3.4,
-                          uploadedTime: doc.uploadedAt,
-                          fileType: FileType.fromExtension(doc.fileType ?? 'pdf') ?? FileType.pdf,
+                  return RefreshIndicator(
+                    color: AppColors.primary,
+                    onRefresh: () async{
+                      homeCon.fetchAllDocuments();
+                    },
+                    child: ListView.builder(
+                        itemCount: homeCon.documents.length,
+                        itemBuilder: (context, index) {
+                          var doc = homeCon.documents[index];
+                          return DocumentBox(title: doc.filename ?? '',
+                            fileSize: 3.4,
+                            uploadedTime: doc.uploadedAt,
+                            fileType: FileType.fromExtension(doc.fileType ?? 'pdf') ?? FileType.pdf,
 
-                        ).marginOnly(bottom: 8.h);
-                      });
+                          ).marginOnly(bottom: 8.h);
+                        }),
+                  );
                 }),
               )
             ],
