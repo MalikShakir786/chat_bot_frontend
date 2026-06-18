@@ -16,6 +16,7 @@ export 'package:chat_bot_frontend/global/widgets/custom_text_field.dart';
 export 'package:chat_bot_frontend/global/widgets/custom_app_button.dart';
 export 'package:chat_bot_frontend/global/widgets/custom_icon_button.dart';
 export 'package:chat_bot_frontend/global/widgets/custom_app_bar.dart';
+export 'package:chat_bot_frontend/global/popups/app_anchored_menu.dart';
 
 // Packages
 export 'package:dio/dio.dart';

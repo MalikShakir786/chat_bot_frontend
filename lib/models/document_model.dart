@@ -4,6 +4,7 @@ class DocumentModel {
     required this.filename,
     required this.fileType,
     required this.filePath,
+    required this.fileSize,
     required this.uploadedAt,
   });
 
@@ -11,6 +12,7 @@ class DocumentModel {
   final String? filename;
   final String? fileType;
   final String? filePath;
+  final String? fileSize;
   final DateTime? uploadedAt;
 
   factory DocumentModel.fromJson(Map<String, dynamic> json){
@@ -19,6 +21,7 @@ class DocumentModel {
       filename: json["filename"],
       fileType: json["file_type"],
       filePath: json["file_path"],
+      fileSize: json["file_size"],
       uploadedAt: DateTime.tryParse(json["uploaded_at"] ?? ""),
     );
   }
@@ -28,6 +31,7 @@ class DocumentModel {
     "filename": filename,
     "file_type": fileType,
     "file_path": filePath,
+    "file_size": fileSize,
     "uploaded_at": uploadedAt?.toIso8601String(),
   };
 

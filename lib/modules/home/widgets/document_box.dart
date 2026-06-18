@@ -1,21 +1,24 @@
+import 'package:chat_bot_frontend/models/document_model.dart';
+import 'package:chat_bot_frontend/modules/home/controllers/home_controller.dart';
+
 import '../../../constants/app_imports.dart';
 
 class DocumentBox extends StatelessWidget {
-  const DocumentBox({
+  DocumentBox({
     super.key,
-    required this.title,
-    required this.fileSize,
-    required this.uploadedTime,
-    required this.fileType,
+    required this.document
   });
 
-  final String title;
-  final double fileSize;
-  final DateTime? uploadedTime;
-  final FileType fileType;
+  final DocumentModel document;
+
+  final homeCon = Get.find<HomeController>();
+
+  final GlobalKey menuKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
+    var type = FileType.fromExtension(document.fileType ?? 'pdf') ??
+        FileType.pdf;
     return Container(
       padding: EdgeInsets.all(15.sp),
       decoration: BoxDecoration(
@@ -27,21 +30,21 @@ class DocumentBox extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Image.asset(fileType.icon, height: 35.h),
+          Image.asset(type.icon, height: 35.h),
           SizedBox(width: 10.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ReuseText(
-                  title: title,
+                  title: document.filename ?? '',
                   size: 14.sp,
                   weight: FontWeight.w500,
                   maxLines: 2,
                 ),
                 SizedBox(height: 3.h),
                 ReuseText(
-                  title: '$fileSize MB · Uploaded ${uploadedTime?.timeAgoOrDate ?? ''}',
+                  title: '${document.fileSize} · Uploaded ${document.uploadedAt?.timeAgoOrDate ?? ''}',
                   size: 11.sp,
                   weight: FontWeight.w500,
                   color: AppColors.textSecondary,
@@ -50,7 +53,26 @@ class DocumentBox extends StatelessWidget {
             ),
           ),
           SizedBox(width: 10.w),
-          Icon(Icons.more_vert, color: Colors.black),
+          GestureDetector(
+            key: menuKey,
+            onTap: () {
+              AppAnchoredMenu.show(
+                context: context,
+                key: menuKey,
+                items: [
+                  MenuItemData(
+                    title: "Delete",
+                    icon: Icons.delete,
+                    color: Colors.red,
+                    onTap: () {
+                      homeCon.deleteDocument(document.id ?? 0);
+                    },
+                  ),
+                ],
+              );
+            },
+            child: Icon(Icons.more_vert, color: Colors.black,size: 25,),
+          ),
         ],
       ),
     );

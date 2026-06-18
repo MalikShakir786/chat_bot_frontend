@@ -53,38 +53,54 @@ class _HomeViewState extends State<HomeView> {
                 title: 'Your Documents', weight: FontWeight.w500, size: 13.sp,),
               SizedBox(height: 10.h,),
               Expanded(
-                child: Obx(() {
-                  if(homeCon.loadingDocs.value){
-                    return Center(
-                      child: Utils.apiLoader
-                    );
-                  } else if(homeCon.documents.isEmpty){
-                    return Center(
-                      child: ReuseText(title: 'No Documents Added',
-                      size: 12.sp,
-                        weight: FontWeight.w500,
-                      ),
-                    );
-                  }
-                  return RefreshIndicator(
-                    color: AppColors.primary,
-                    onRefresh: () async{
-                      homeCon.fetchAllDocuments();
-                    },
-                    child: ListView.builder(
-                        itemCount: homeCon.documents.length,
-                        itemBuilder: (context, index) {
-                          var doc = homeCon.documents[index];
-                          return DocumentBox(title: doc.filename ?? '',
-                            fileSize: 3.4,
-                            uploadedTime: doc.uploadedAt,
-                            fileType: FileType.fromExtension(doc.fileType ?? 'pdf') ?? FileType.pdf,
+                child: RefreshIndicator(
+                  color: AppColors.primary,
+                  onRefresh: () async {
+                    await homeCon.fetchAllDocuments();
+                  },
+                  child: Obx(() {
+                    if (homeCon.loadingDocs.value) {
+                      return ListView(
+                        children: [
+                          SizedBox(
+                            height: 300.h,
+                            child: Center(child: Utils.apiLoader),
+                          ),
+                        ],
+                      );
+                    }
 
-                          ).marginOnly(bottom: 8.h);
-                        }),
-                  );
-                }),
-              )
+                    if (homeCon.documents.isEmpty) {
+                      return ListView(
+                        children: [
+                          SizedBox(
+                            height: 300.h,
+                            child: Center(
+                              child: ReuseText(
+                                title: 'No Documents Added',
+                                size: 12.sp,
+                                weight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+
+                    return ListView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount: homeCon.documents.length,
+                      itemBuilder: (context, index) {
+                        var doc = homeCon.documents[index];
+
+                        return DocumentBox(
+                          document: doc,
+                        ).marginOnly(bottom: 8.h);
+                      },
+                    );
+                  }),
+                ),
+              ),
             ],
           ),
         ),

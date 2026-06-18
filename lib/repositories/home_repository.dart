@@ -65,4 +65,31 @@ class HomeRepository {
     }
 
     return null;
-  }}
+  }
+
+  // Delete File Api
+  Future<bool> deleteFileApi({var params}) async {
+    try {
+      final response = await _apiService.callApi(
+        urlEndPoint: AppUrls.documentDelete,
+        method: HttpMethod.Delete,
+        queryParameters: params,
+        withoutLoader: false,
+      );
+
+      if (response != null &&
+          response.statusCode == 200 &&
+          response.data != null) {
+        return true;
+      }
+
+      Utils.toastMessage(response?.data['error_code']);
+    } catch (e, stk) {
+      print(stk);
+      print("Error in api: $e");
+      Utils.toastMessage(AppStrings.errorApiOccurred);
+    }
+
+    return false;
+  }
+}

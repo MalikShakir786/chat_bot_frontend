@@ -39,7 +39,7 @@ class HomeController extends GetxController {
   Future<void> pickFile() async {
     FilePickerResult? result = await FilePicker.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'docx', 'txt'],
+      allowedExtensions: ['pdf', 'docx', 'doc', 'txt'],
     );
 
     if (result != null) {
@@ -79,6 +79,19 @@ class HomeController extends GetxController {
       print(e);
     } finally {
       uploadingFile(false);
+    }
+  }
+
+  Future<void> deleteDocument(int id) async {
+    try {
+      var success = await _api.deleteFileApi(params: {'id': id});
+
+      if (success) {
+        documents.removeWhere((doc) => doc.id == id);
+        Utils.toastMessage("Deleted successfully");
+      }
+    } catch (e) {
+      print(e);
     }
   }
 }

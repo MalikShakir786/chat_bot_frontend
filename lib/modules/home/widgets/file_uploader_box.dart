@@ -38,7 +38,12 @@ class FileUploaderBox extends StatelessWidget {
               Image.asset(
                 AppAssets.upload, height: 50.h, color: AppColors.primary,),
               ReuseText(
-                title: 'Upload Files', weight: FontWeight.w500, size: 14.sp,),
+                title: homeCon.selectedFileName.value.isEmpty
+                    ? 'Upload Files'
+                    : homeCon.selectedFileName.value,
+                weight: FontWeight.w500,
+                size: 14.sp,
+              ),
               SizedBox(height: 4.h,),
               ReuseText(title: 'Drag & drop files here or browse',
                 size: 12.sp,

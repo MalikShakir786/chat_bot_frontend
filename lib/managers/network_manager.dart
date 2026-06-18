@@ -158,7 +158,7 @@ class NetworkManager {
         case HttpMethod.Patch:
           break;
         case HttpMethod.Delete:
-          Response response = await dio.delete(requestURL, data: body);
+          Response response = await dio.delete(requestURL, data: body, queryParameters: queryParameters);
 
           if (!withoutLoader) Utils.hideLoader();
 
