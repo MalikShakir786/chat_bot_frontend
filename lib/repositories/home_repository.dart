@@ -1,4 +1,5 @@
 import 'package:chat_bot_frontend/models/document_model.dart';
+import 'package:chat_bot_frontend/models/chat_model.dart';
 import '../constants/app_imports.dart';
 
 List<DocumentModel> parseDocumentModelList(List<dynamic> json) {
@@ -7,6 +8,10 @@ List<DocumentModel> parseDocumentModelList(List<dynamic> json) {
 
 DocumentModel parseDocumentModel(Map<String, dynamic> json) {
   return DocumentModel.fromJson(json);
+}
+
+ChatModel parseChatModel(Map<String, dynamic> json) {
+  return ChatModel.fromJson(json);
 }
 
 class HomeRepository {
@@ -91,5 +96,34 @@ class HomeRepository {
     }
 
     return false;
+  }
+
+  // Send Chat Message Api
+  Future<ChatModel?> sendMessageApi({Map<String, dynamic>? params}) async {
+    try {
+      final response = await _apiService.callApi(
+        urlEndPoint: AppUrls.sendMessage,
+        method: HttpMethod.Post,
+        queryParameters: params,
+        withoutLoader: true,
+      );
+
+      if (response != null &&
+          response.statusCode == 200 &&
+          response.data != null) {
+        return await compute<Map<String, dynamic>, ChatModel>(
+          parseChatModel,
+          response.data['data'],
+        );
+      }
+
+      Utils.toastMessage(response?.data['error_code']);
+    } catch (e, stk) {
+      print(stk);
+      print("Error in api: $e");
+      Utils.toastMessage(AppStrings.errorApiOccurred);
+    }
+
+    return null;
   }
 }

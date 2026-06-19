@@ -1,13 +1,15 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:chat_bot_frontend/models/document_model.dart';
+import 'package:chat_bot_frontend/models/chat_model.dart';
+import 'package:intl/intl.dart';
 
 import '../../../constants/app_imports.dart' hide FileType;
 
 class HomeController extends GetxController {
   final _api = HomeRepository();
 
-  // ================= Variables ================
+  // ================= Document Variables ================
   var loadingDocs = false.obs;
   var uploadingFile = false.obs;
 
@@ -15,6 +17,12 @@ class HomeController extends GetxController {
 
   File? selectedFile;
   var selectedFileName = ''.obs;
+
+  // ================= Chat Variables ================
+  final messageController = TextEditingController();
+  var messages = <ChatMessageModel>[].obs;
+  var sendingMessage = false.obs;
+  final scrollController = ScrollController();
 
   // ================ Fetch Documents ===================
   Future<void> fetchAllDocuments() async {
@@ -93,5 +101,92 @@ class HomeController extends GetxController {
     } catch (e) {
       print(e);
     }
+  }
+
+  // ================ Send Chat Message ===================
+  Future<void> sendMessage() async {
+    final text = messageController.text.trim();
+
+    if (text.isEmpty) return;
+
+    if (sendingMessage.value) return; // avoid double sends while waiting
+
+    final time = DateFormat('h:mm a').format(DateTime.now());
+
+    // 1. Add user's message immediately
+    messages.add(
+      ChatMessageModel(
+        sender: ChatMessageSender.user,
+        text: text,
+        time: time,
+      ),
+    );
+
+    messageController.clear();
+
+    // 2. Add a loading placeholder for the agent reply
+    messages.add(
+      ChatMessageModel(
+        sender: ChatMessageSender.agent,
+        text: '',
+        time: time,
+        isLoading: true,
+      ),
+    );
+
+    _scrollToBottom();
+
+    try {
+      sendingMessage(true);
+
+      final response = await _api.sendMessageApi(
+        params: {"query": text, "top_k": 3, "min_score": 0.0},
+      );
+
+      final agentTime = DateFormat('h:mm a').format(DateTime.now());
+
+      if (response != null) {
+        messages[messages.length - 1] = ChatMessageModel(
+          sender: ChatMessageSender.agent,
+          text: response.answer ?? "Sorry, I couldn't find an answer.",
+          time: agentTime,
+          sources: response.sources,
+        );
+      } else {
+        messages[messages.length - 1] = ChatMessageModel(
+          sender: ChatMessageSender.agent,
+          text: "Something went wrong. Please try again.",
+          time: agentTime,
+        );
+      }
+    } catch (e) {
+      print(e);
+      messages[messages.length - 1] = messages.last.copyWith(
+        text: "Something went wrong. Please try again.",
+        isLoading: false,
+      );
+    } finally {
+      sendingMessage(false);
+      _scrollToBottom();
+    }
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (scrollController.hasClients) {
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  @override
+  void onClose() {
+    messageController.dispose();
+    scrollController.dispose();
+    super.onClose();
   }
 }
