@@ -109,11 +109,10 @@ class HomeController extends GetxController {
 
     if (text.isEmpty) return;
 
-    if (sendingMessage.value) return; // avoid double sends while waiting
+    if (sendingMessage.value) return;
 
     final time = DateFormat('h:mm a').format(DateTime.now());
 
-    // 1. Add user's message immediately
     messages.add(
       ChatMessageModel(
         sender: ChatMessageSender.user,
@@ -124,7 +123,6 @@ class HomeController extends GetxController {
 
     messageController.clear();
 
-    // 2. Add a loading placeholder for the agent reply
     messages.add(
       ChatMessageModel(
         sender: ChatMessageSender.agent,
@@ -140,7 +138,7 @@ class HomeController extends GetxController {
       sendingMessage(true);
 
       final response = await _api.sendMessageApi(
-        params: {"query": text, "top_k": 3, "min_score": 0.0},
+        body: {"query": text, "top_k": 3, "min_score": 0.0},
       );
 
       final agentTime = DateFormat('h:mm a').format(DateTime.now());

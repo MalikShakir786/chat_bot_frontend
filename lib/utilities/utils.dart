@@ -1,3 +1,5 @@
+import 'package:chat_bot_frontend/modules/home/widgets/typing_loader.dart';
+
 import '../constants/app_imports.dart';
 
 class Utils {
@@ -20,6 +22,25 @@ class Utils {
             child: CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
             ),
+          ),
+        ),
+      );
+    }
+  }
+
+  static void showDottedLoader() {
+    if (!(Get.isDialogOpen ?? true)) {
+      Get.dialog(
+        barrierDismissible: false,
+        Center(
+          child: SizedBox(
+            height: 100,
+            width: 80,
+            child: Center(
+              child: TypingLoaderBox(
+                color: Colors.white,
+              ),
+            )
           ),
         ),
       );

@@ -1,6 +1,5 @@
 import 'package:chat_bot_frontend/modules/home/widgets/agent_reply_message_box.dart';
 import 'package:chat_bot_frontend/modules/home/widgets/user_reply_message_box.dart';
-import 'package:chat_bot_frontend/modules/home/widgets/typing_loader_box.dart';
 import 'package:chat_bot_frontend/models/chat_model.dart';
 
 import '../../../constants/app_imports.dart';

@@ -30,6 +30,7 @@ class CustomTextField extends StatefulWidget {
 
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmit;
   final VoidCallback? onTap;
 
   const CustomTextField({
@@ -61,6 +62,7 @@ class CustomTextField extends StatefulWidget {
     this.isError = false,
     this.readOnly = false,
     this.onTap,
+    this.onSubmit,
     this.maxLines = 1,
   });
 
@@ -136,6 +138,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             onChanged: widget.onChanged,
             readOnly: widget.readOnly,
             onTap: widget.onTap,
+            onFieldSubmitted: widget.onSubmit,
             maxLines: widget.isPassword ? 1 : widget.maxLines,
             minLines: 1,
 

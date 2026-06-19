@@ -1,7 +1,9 @@
 import '../../../constants/app_imports.dart';
 
 class TypingLoaderBox extends StatefulWidget {
-  const TypingLoaderBox({super.key});
+  const TypingLoaderBox({super.key, this.color});
+
+  final Color? color;
 
   @override
   State<TypingLoaderBox> createState() => _TypingLoaderBoxState();
@@ -63,7 +65,7 @@ class _TypingLoaderBoxState extends State<TypingLoaderBox>
                       width: 7.w,
                       height: 7.w,
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.5 + 0.5 * bounce),
+                        color: widget.color?? AppColors.primary.withOpacity(0.5 + 0.5 * bounce),
                         shape: BoxShape.circle,
                       ),
                     ),

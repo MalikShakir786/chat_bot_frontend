@@ -71,7 +71,10 @@ class LoginView extends StatelessWidget {
                 SizedBox(height: 25.h,),
                 CustomAppButton(
                   text: 'Login',
-                  onTap: (){
+                  onTap: () async{
+                    Utils.showDottedLoader();
+                    await Future.delayed(Duration(seconds: 3));
+                    Utils.hideLoader();
                     Get.toNamed(Routes.HOME);
                   },
                 ),

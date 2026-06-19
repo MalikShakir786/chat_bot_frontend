@@ -99,12 +99,12 @@ class HomeRepository {
   }
 
   // Send Chat Message Api
-  Future<ChatModel?> sendMessageApi({Map<String, dynamic>? params}) async {
+  Future<ChatModel?> sendMessageApi({var body}) async {
     try {
       final response = await _apiService.callApi(
         urlEndPoint: AppUrls.sendMessage,
         method: HttpMethod.Post,
-        queryParameters: params,
+        body: body,
         withoutLoader: true,
       );
 
