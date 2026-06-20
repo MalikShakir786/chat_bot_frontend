@@ -13,7 +13,14 @@ class CustomAppBar extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        CustomIconButton(iconPath: AppAssets.menu, isBackground: false,iconColor: AppColors.primary,size: 18,),
+        CustomIconButton(
+          onTap: (){
+            PrefManager.clearAll();
+            Get.offAllNamed(
+              Routes.LOGIN
+            );
+          },
+          iconPath: AppAssets.menu, isBackground: false,iconColor: AppColors.primary,size: 18,),
         Expanded(child: Center(child: ReuseText(title: title, size: 15.sp, weight: FontWeight.w600, color: AppColors.primary,))),
         CustomIconButton(iconPath: AppAssets.addFiles, size: 21.sp, iconColor: AppColors.primary,)
       ],

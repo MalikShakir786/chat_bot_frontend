@@ -42,7 +42,11 @@ class _SplashViewState extends State<SplashView>
     _controller.forward();
 
     Future.delayed(const Duration(seconds: 3), () {
-      Get.offNamed(Routes.LOGIN);
+      if(PrefManager.getUserId() != null){
+        Get.offNamed(Routes.HOME);
+      } else {
+        Get.offNamed(Routes.LOGIN);
+      }
     });
   }
 

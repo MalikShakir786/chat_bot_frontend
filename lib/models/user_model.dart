@@ -1,26 +1,20 @@
 class UserModel {
-  final int? id;
-  final String email;
-  final String password;
-  final String? name;
-  final String? token;
+  final int id;
+  final String? accessToken;
+  final String? refreshToken;
 
   UserModel({
-    this.id,
-    required this.email,
-    required this.password,
-    this.name,
-    this.token,
+    required this.id,
+    required this.accessToken,
+   required this.refreshToken,
   });
 
   // Convert JSON → User
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id'],
-      email: json['email'],
-      password: json['password'],
-      name: json['name'],
-      token: json['token'],
+     accessToken: json['access_token'],
+      refreshToken: json['refresh_token']
     );
   }
 
@@ -28,27 +22,8 @@ class UserModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'email': email,
-      'password': password,
-      'name': name,
-      'token': token,
+     'access_token': accessToken,
+      'refresh_token': refreshToken
     };
-  }
-
-  // CopyWith (useful for updates)
-  UserModel copyWith({
-    int? id,
-    String? email,
-    String? password,
-    String? name,
-    String? token,
-  }) {
-    return UserModel(
-      id: id ?? this.id,
-      email: email ?? this.email,
-      password: password ?? this.password,
-      name: name ?? this.name,
-      token: token ?? this.token,
-    );
   }
 }

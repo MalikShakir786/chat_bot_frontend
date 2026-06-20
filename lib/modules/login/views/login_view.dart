@@ -59,6 +59,7 @@ class LoginView extends StatelessWidget {
                   prefixIcon: AppAssets.email,
                   borderColor: Colors.grey,
                   hint: "Email address",
+                  controller: loginCon.emailTEC,
                 ),
                 SizedBox(height: 15.h,),
                 CustomTextField(
@@ -67,15 +68,13 @@ class LoginView extends StatelessWidget {
                   hint: "Password",
                   suffixIcon: AppAssets.eyeShow,
                   isPassword: true,
+                  controller: loginCon.passwordTEC,
                 ),
                 SizedBox(height: 25.h,),
                 CustomAppButton(
                   text: 'Login',
                   onTap: () async{
-                    Utils.showDottedLoader();
-                    await Future.delayed(Duration(seconds: 3));
-                    Utils.hideLoader();
-                    Get.toNamed(Routes.HOME);
+                    loginCon.login();
                   },
                 ),
                 SizedBox(height: 40.h,),

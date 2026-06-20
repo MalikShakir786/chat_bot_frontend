@@ -9,11 +9,11 @@ class LoginRepository {
   final _apiService = NetworkManager();
 
   // Get Token
-  Future<UserModel?> loginApi(var data) async {
+  Future<UserModel?> loginApi({var body}) async {
     try {
       final response = await _apiService.callApi(
         urlEndPoint: AppUrls.login,
-        body: data,
+        body: body,
         method: HttpMethod.Post,
         withoutLoader: true,
       );
@@ -31,5 +31,30 @@ class LoginRepository {
       Utils.toastMessage(AppStrings.errorApiOccurred);
     }
     return null;
+  }
+
+  // Sign Up Api
+  Future<bool> signupApi(var data) async {
+    try {
+      final response = await _apiService.callApi(
+        urlEndPoint: AppUrls.signup,
+        body: data,
+        method: HttpMethod.Post,
+        withoutLoader: true,
+      );
+
+      if (response != null &&
+          response.statusCode == 200 &&
+          response.data != null) {
+        return true;
+      }
+
+      Utils.toastMessage(response?.data['error_code']);
+    } catch (e, stk) {
+      print(stk);
+      print("Error in api: $e");
+      Utils.toastMessage(AppStrings.errorApiOccurred);
+    }
+    return false;
   }
 }

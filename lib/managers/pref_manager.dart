@@ -74,8 +74,8 @@ class PrefManager {
     }
   }
 
-  static String getUserId() {
-    return _prefsInstance.getString('userId') ?? '';
+  static String? getUserId() {
+    return _prefsInstance.getString('userId');
   }
 
   static void setUserId(String value) {

@@ -12,10 +12,16 @@ class LoginController extends GetxController {
   // ====================== Methods ==========================
 
   Future<void> login() async {
-    Utils.showLoader();
+    Utils.showDottedLoader();
     try {
-      final loginResponse = await _api.loginApi({
-        "userNameOrEmailAddress": emailTEC.text,
+
+      if(emailTEC.text.isEmpty || passwordTEC.text.isEmpty){
+        Utils.toastMessage('Please fill all the fields');
+        return;
+      }
+
+      final loginResponse = await _api.loginApi(body: {
+        "email": emailTEC.text,
         "password": passwordTEC.text,
       });
 
@@ -25,9 +31,36 @@ class LoginController extends GetxController {
       }
 
       PrefManager.setUserId(loginResponse.id.toString());
+      PrefManager.setEncryptedToken(loginResponse.accessToken ?? '');
+      PrefManager.setRefreshToken(loginResponse.refreshToken ?? '');
+      Get.offAllNamed(Routes.HOME);
 
     } catch (e) {
       print("Login Exception: $e");
+    } finally {
+      Utils.hideLoader();
+    }
+  }
+
+  Future<void> signup() async {
+    Utils.showDottedLoader();
+    try {
+      final response = await _api.signupApi({
+        "userNameOrEmailAddress": emailTEC.text,
+        "password": passwordTEC.text,
+      });
+
+      if (!response) {
+        Utils.hideLoader();
+        return;
+      }
+
+      Get.offAllNamed(Routes.LOGIN);
+
+    } catch (e) {
+      print("Login Exception: $e");
+    } finally {
+      Utils.hideLoader();
     }
   }
 
