@@ -1,5 +1,74 @@
-class SourceModel {
-  SourceModel({
+class ChatModel {
+  ChatModel({
+    required this.id,
+    required this.userId,
+    required this.query,
+    required this.answer,
+    required this.sources,
+    required this.confidence,
+    required this.hasContext,
+    required this.createdAt,
+  });
+
+  final int? id;
+  final int? userId;
+  final String? query;
+  final String? answer;
+  final List<Source> sources;
+  final double? confidence;
+  final dynamic hasContext;
+  final DateTime? createdAt;
+
+  ChatModel copyWith({
+    int? id,
+    int? userId,
+    String? query,
+    String? answer,
+    List<Source>? sources,
+    double? confidence,
+    dynamic? hasContext,
+    DateTime? createdAt,
+  }) {
+    return ChatModel(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      query: query ?? this.query,
+      answer: answer ?? this.answer,
+      sources: sources ?? this.sources,
+      confidence: confidence ?? this.confidence,
+      hasContext: hasContext ?? this.hasContext,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  factory ChatModel.fromJson(Map<String, dynamic> json){
+    return ChatModel(
+      id: json["id"],
+      userId: json["user_id"],
+      query: json["query"],
+      answer: json["answer"],
+      sources: json["sources"] == null ? [] : List<Source>.from(json["sources"]!.map((x) => Source.fromJson(x))),
+      confidence: json["confidence"],
+      hasContext: json["has_context"],
+      createdAt: DateTime.tryParse(json["created_at"] ?? ""),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "user_id": userId,
+    "query": query,
+    "answer": answer,
+    "sources": sources.map((x) => x?.toJson()).toList(),
+    "confidence": confidence,
+    "has_context": hasContext,
+    "created_at": createdAt?.toIso8601String(),
+  };
+
+}
+
+class Source {
+  Source({
     required this.source,
     required this.fileType,
     required this.page,
@@ -13,12 +82,28 @@ class SourceModel {
   final double? similarityScore;
   final String? preview;
 
-  factory SourceModel.fromJson(Map<String, dynamic> json) {
-    return SourceModel(
+  Source copyWith({
+    String? source,
+    String? fileType,
+    int? page,
+    double? similarityScore,
+    String? preview,
+  }) {
+    return Source(
+      source: source ?? this.source,
+      fileType: fileType ?? this.fileType,
+      page: page ?? this.page,
+      similarityScore: similarityScore ?? this.similarityScore,
+      preview: preview ?? this.preview,
+    );
+  }
+
+  factory Source.fromJson(Map<String, dynamic> json){
+    return Source(
       source: json["source"],
       fileType: json["file_type"],
       page: json["page"],
-      similarityScore: (json["similarity_score"] as num?)?.toDouble(),
+      similarityScore: json["similarity_score"],
       preview: json["preview"],
     );
   }
@@ -30,76 +115,5 @@ class SourceModel {
     "similarity_score": similarityScore,
     "preview": preview,
   };
-}
 
-class ChatModel {
-  ChatModel({
-    required this.query,
-    required this.answer,
-    required this.sources,
-    required this.confidence,
-    required this.hasContext,
-  });
-
-  final String? query;
-  final String? answer;
-  final List<SourceModel> sources;
-  final double? confidence;
-  final bool? hasContext;
-
-  factory ChatModel.fromJson(Map<String, dynamic> json) {
-    return ChatModel(
-      query: json["query"],
-      answer: json["answer"],
-      sources: json["sources"] == null
-          ? []
-          : List<SourceModel>.from(
-        (json["sources"] as List).map((s) => SourceModel.fromJson(s)),
-      ),
-      confidence: (json["confidence"] as num?)?.toDouble(),
-      hasContext: json["has_context"],
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-    "query": query,
-    "answer": answer,
-    "sources": sources.map((s) => s.toJson()).toList(),
-    "confidence": confidence,
-    "has_context": hasContext,
-  };
-}
-
-// ============ UI-level chat message (one bubble in the list) ============
-
-enum ChatMessageSender { user, agent }
-
-class ChatMessageModel {
-  ChatMessageModel({
-    required this.sender,
-    required this.text,
-    required this.time,
-    this.isLoading = false,
-    this.sources = const [],
-  });
-
-  final ChatMessageSender sender;
-  final String text;
-  final String time;
-  final bool isLoading;
-  final List<SourceModel> sources;
-
-  ChatMessageModel copyWith({
-    String? text,
-    bool? isLoading,
-    List<SourceModel>? sources,
-  }) {
-    return ChatMessageModel(
-      sender: sender,
-      text: text ?? this.text,
-      time: time,
-      isLoading: isLoading ?? this.isLoading,
-      sources: sources ?? this.sources,
-    );
-  }
 }

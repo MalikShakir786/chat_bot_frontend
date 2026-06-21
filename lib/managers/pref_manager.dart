@@ -11,7 +11,7 @@ class PrefManager {
   static late final SharedPreferences _prefsInstance;
 
 
-  static UserModel? userData;
+  static var userData = Rxn<UserModel>();
 
   static bool isLoggedIn = false;
 
@@ -30,7 +30,7 @@ class PrefManager {
     await init();
     isLoggedIn = isLogin();
     if (isLoggedIn) {
-      userData = getUser();
+      userData.value = getUser();
     }
   }
 
@@ -90,7 +90,7 @@ class PrefManager {
     try {
       final encoded = await compute(_encodeUserProfile, userProfile);
       await _prefsInstance.setString('user', encoded);
-      userData = getUser();
+      userData.value = getUser();
     } catch (e) {
       print('Failed to save user: $e');
     }
@@ -99,7 +99,7 @@ class PrefManager {
   static UserModel? getUser() {
     final userJson = _prefsInstance.getString('user');
     if (userJson != null) {
-      userData = UserModel.fromJson(
+      userData.value = UserModel.fromJson(
         json.decode(userJson) as Map<String, dynamic>,
       );
       return UserModel.fromJson(json.decode(userJson) as Map<String, dynamic>);
@@ -133,6 +133,6 @@ class PrefManager {
 
   static void clearAll() {
     _prefsInstance.clear();
-    userData = null;
+    userData.value = null;
   }
 }

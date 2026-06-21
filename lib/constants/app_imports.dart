@@ -36,7 +36,7 @@ export 'package:chat_bot_frontend/utilities/utils.dart';
 export 'package:chat_bot_frontend/utilities/extensions.dart';
 
 // Repositories
-export 'package:chat_bot_frontend/repositories/login_repository.dart';
+export 'package:chat_bot_frontend/repositories/auth_repository.dart';
 export 'package:chat_bot_frontend/repositories/home_repository.dart';
 
 // Routes

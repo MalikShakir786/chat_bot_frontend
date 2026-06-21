@@ -40,8 +40,12 @@ class _HomeViewState extends State<HomeView> {
                   tag: 'logo',
                   child: CustomAppBar(title: 'Home',)),
               SizedBox(height: 10.h,),
-              ReuseText(
-                title: 'Hello, User 👋', weight: FontWeight.w500, size: 19.sp,),
+              Obx(() {
+                return ReuseText(
+                  title: 'Hello, ${PrefManager.userData.value?.name ?? ''} 👋',
+                  weight: FontWeight.w500,
+                  size: 19.sp,);
+              }),
               ReuseText(
                 title: 'Upload your documents to build\nyour Chat model',
                 size: 12.sp,
@@ -63,7 +67,7 @@ class _HomeViewState extends State<HomeView> {
                       return ListView(
                         children: [
                           SizedBox(
-                            height: 300.h,
+                            height: 250.h,
                             child: Center(child: Utils.apiLoader),
                           ),
                         ],
@@ -74,7 +78,7 @@ class _HomeViewState extends State<HomeView> {
                       return ListView(
                         children: [
                           SizedBox(
-                            height: 300.h,
+                            height: 250.h,
                             child: Center(
                               child: ReuseText(
                                 title: 'No Documents Added',

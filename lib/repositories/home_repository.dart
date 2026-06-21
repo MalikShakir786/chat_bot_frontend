@@ -6,6 +6,10 @@ List<DocumentModel> parseDocumentModelList(List<dynamic> json) {
   return json.map((j)=> DocumentModel.fromJson(j)).toList();
 }
 
+List<ChatModel> parseChatModelList(List<dynamic> json) {
+  return json.map((j)=> ChatModel.fromJson(j)).toList();
+}
+
 DocumentModel parseDocumentModel(Map<String, dynamic> json) {
   return DocumentModel.fromJson(json);
 }
@@ -33,7 +37,7 @@ class HomeRepository {
         return await compute<List<dynamic>, List<DocumentModel>>(parseDocumentModelList, response.data['data']);
       }
 
-      Utils.toastMessage(response?.data['error_code']);
+      Utils.toastMessage(response?.data['detail']['message']);
     } catch (e, stk) {
       print(stk);
       print("Error in api: $e");
@@ -43,13 +47,14 @@ class HomeRepository {
   }
 
   // Upload File Api
-  Future<DocumentModel?> uploadFileApi({FormData? params}) async {
+  Future<DocumentModel?> uploadFileApi({var params, FormData? formData}) async {
     try {
       final response = await _apiService.callApi(
         urlEndPoint: AppUrls.documentUpload,
         method: HttpMethod.Post,
         isFormDataRequest: true,
-        formData: params,
+        formData: formData,
+        queryParameters: params,
         withoutLoader: false,
       );
 
@@ -62,7 +67,7 @@ class HomeRepository {
         );
       }
 
-      Utils.toastMessage(response?.data['error_code']);
+      Utils.toastMessage(response?.data['detail']['message']);
     } catch (e, stk) {
       print(stk);
       print("Error in api: $e");
@@ -88,7 +93,7 @@ class HomeRepository {
         return true;
       }
 
-      Utils.toastMessage(response?.data['error_code']);
+      Utils.toastMessage(response?.data['detail']['message']);
     } catch (e, stk) {
       print(stk);
       print("Error in api: $e");
@@ -117,13 +122,38 @@ class HomeRepository {
         );
       }
 
-      Utils.toastMessage(response?.data['error_code']);
+      // Utils.toastMessage(response?.data['detail']['message']);
+    } catch (e, stk) {
+      print(stk);
+      print("Error in api: $e");
+      // Utils.toastMessage(AppStrings.errorApiOccurred);
+    }
+
+    return null;
+  }
+
+  // Get All Chats
+  Future<List<ChatModel>> getAllChatsApi({var params}) async {
+    try {
+      final response = await _apiService.callApi(
+        urlEndPoint: AppUrls.chatHistory,
+        queryParameters: params,
+        method: HttpMethod.Get,
+        withoutLoader: true,
+      );
+
+      if (response != null &&
+          response.statusCode == 200 &&
+          response.data != null) {
+        return await compute<List<dynamic>, List<ChatModel>>(parseChatModelList, response.data['data']);
+      }
+
+      Utils.toastMessage(response?.data['detail']['message']);
     } catch (e, stk) {
       print(stk);
       print("Error in api: $e");
       Utils.toastMessage(AppStrings.errorApiOccurred);
     }
-
-    return null;
+    return [];
   }
 }

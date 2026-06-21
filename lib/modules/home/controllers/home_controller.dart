@@ -18,18 +18,16 @@ class HomeController extends GetxController {
   File? selectedFile;
   var selectedFileName = ''.obs;
 
-  // ================= Chat Variables ================
-  final messageController = TextEditingController();
-  var messages = <ChatMessageModel>[].obs;
-  var sendingMessage = false.obs;
-  final scrollController = ScrollController();
-
   // ================ Fetch Documents ===================
   Future<void> fetchAllDocuments() async {
     try {
       loadingDocs(true);
 
-      var response = await _api.getAllDocumentsApi();
+      var params = {
+        'user_id': PrefManager.getUserId()
+      };
+
+      var response = await _api.getAllDocumentsApi(params: params);
 
       if (response.isNotEmpty) {
         documents.value = response;
@@ -73,7 +71,11 @@ class HomeController extends GetxController {
         ),
       });
 
-      var response = await _api.uploadFileApi(params: formData);
+      var params = {
+        'user_id': PrefManager.getUserId()
+      };
+
+      var response = await _api.uploadFileApi(params: params, formData: formData);
 
       if (response != null) {
         documents.insert(0, response);
@@ -92,7 +94,7 @@ class HomeController extends GetxController {
 
   Future<void> deleteDocument(int id) async {
     try {
-      var success = await _api.deleteFileApi(params: {'id': id});
+      var success = await _api.deleteFileApi(params: {'id': id, 'user_id': PrefManager.getUserId()});
 
       if (success) {
         documents.removeWhere((doc) => doc.id == id);
@@ -101,90 +103,5 @@ class HomeController extends GetxController {
     } catch (e) {
       print(e);
     }
-  }
-
-  // ================ Send Chat Message ===================
-  Future<void> sendMessage() async {
-    final text = messageController.text.trim();
-
-    if (text.isEmpty) return;
-
-    if (sendingMessage.value) return;
-
-    final time = DateFormat('h:mm a').format(DateTime.now());
-
-    messages.add(
-      ChatMessageModel(
-        sender: ChatMessageSender.user,
-        text: text,
-        time: time,
-      ),
-    );
-
-    messageController.clear();
-
-    messages.add(
-      ChatMessageModel(
-        sender: ChatMessageSender.agent,
-        text: '',
-        time: time,
-        isLoading: true,
-      ),
-    );
-
-    _scrollToBottom();
-
-    try {
-      sendingMessage(true);
-
-      final response = await _api.sendMessageApi(
-        body: {"query": text, "top_k": 3, "min_score": 0.0},
-      );
-
-      final agentTime = DateFormat('h:mm a').format(DateTime.now());
-
-      if (response != null) {
-        messages[messages.length - 1] = ChatMessageModel(
-          sender: ChatMessageSender.agent,
-          text: response.answer ?? "Sorry, I couldn't find an answer.",
-          time: agentTime,
-          sources: response.sources,
-        );
-      } else {
-        messages[messages.length - 1] = ChatMessageModel(
-          sender: ChatMessageSender.agent,
-          text: "Something went wrong. Please try again.",
-          time: agentTime,
-        );
-      }
-    } catch (e) {
-      print(e);
-      messages[messages.length - 1] = messages.last.copyWith(
-        text: "Something went wrong. Please try again.",
-        isLoading: false,
-      );
-    } finally {
-      sendingMessage(false);
-      _scrollToBottom();
-    }
-  }
-
-  void _scrollToBottom() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (scrollController.hasClients) {
-        scrollController.animateTo(
-          scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
-    });
-  }
-
-  @override
-  void onClose() {
-    messageController.dispose();
-    scrollController.dispose();
-    super.onClose();
   }
 }

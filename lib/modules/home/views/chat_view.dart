@@ -1,15 +1,27 @@
+import 'package:chat_bot_frontend/modules/home/controllers/chat_controller.dart';
 import 'package:chat_bot_frontend/modules/home/widgets/agent_reply_message_box.dart';
 import 'package:chat_bot_frontend/modules/home/widgets/user_reply_message_box.dart';
-import 'package:chat_bot_frontend/models/chat_model.dart';
 
 import '../../../constants/app_imports.dart';
-import '../controllers/home_controller.dart';
 import '../widgets/typing_loader.dart';
 
-class ChatView extends StatelessWidget {
+class ChatView extends StatefulWidget {
   ChatView({super.key});
 
-  final homeCon = Get.find<HomeController>();
+  @override
+  State<ChatView> createState() => _ChatViewState();
+}
+
+class _ChatViewState extends State<ChatView> {
+  final chatCon = Get.find<ChatController>();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      chatCon.fetchChatHistory();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,53 +30,71 @@ class ChatView extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.only(
-              left: 16.w,
-              right: 16.w,
-              top: 16.h,
-              bottom: 80.h
+            left: 16.w,
+            right: 16.w,
+            top: 16.h,
+            bottom: 80.h,
           ),
           child: Column(
             children: [
-              CustomAppBar(title: 'Chat',),
-              SizedBox(height: 10.h,),
+              CustomAppBar(title: 'Chat'),
+              SizedBox(height: 10.h),
               Expanded(
                 child: Obx(() {
-                  final messages = homeCon.messages;
+                  final messages = chatCon.messages;
 
                   if (messages.isEmpty) {
                     return ListView(
-                      controller: homeCon.scrollController,
+                      controller: chatCon.scrollController,
                       children: [
-                        AgentReplyMessageBox(
-                          text: "Hello! I'm InnovaChat\nAsk me anything about your documents.",
-                          time: '',
-                        ),
+                        Obx(() {
+                          return AgentReplyMessageBox(
+                            text:
+                            "Hello ${PrefManager.userData.value?.name ??
+                                ''}! I'm InnovaChat\nAsk me anything about your documents.",
+                            time: '',
+                          );
+                        }),
                       ],
                     );
                   }
 
-                  return ListView.builder(
-                    controller: homeCon.scrollController,
-                    itemCount: messages.length,
-                    itemBuilder: (context, index) {
-                      final message = messages[index];
-
-                      if (message.isLoading) {
-                        return const TypingLoaderBox();
-                      }
-
-                      if (message.sender == ChatMessageSender.user) {
-                        return UserReplyMessageBox(
-                          text: message.text,
-                          time: message.time,
-                        );
-                      }
-
-                      return AgentReplyMessageBox(
-                        text: message.text,
-                        time: message.time,
-                      );
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      chatCon.fetchChatHistory();
                     },
+                    child: ListView.builder(
+                      controller: chatCon.scrollController,
+                      itemCount: messages.length,
+                      reverse: true,
+                      itemBuilder: (context, index) {
+                        final message = messages[index];
+                        final isFirst = index == 0;
+
+                        return Column(
+                            children: [
+                              UserReplyMessageBox(
+                                text: message.query ?? '',
+                                time: message.createdAt?.timeAgoOrDate ?? '',
+                              ),
+
+                              if (chatCon.sendingMessage.value &&
+                                  isFirst &&
+                                  (message.answer == null ||
+                                      message.answer!.isEmpty))
+                                TypingLoaderBox()
+                              else
+                                if (message.answer != null &&
+                                    message.answer!.isNotEmpty)
+                                  AgentReplyMessageBox(
+                                    text: message.answer ?? '',
+                                    time: message.createdAt?.timeAgoOrDate ??
+                                        '',
+                                  ),
+                            ],
+                          );
+                      },
+                    ),
                   );
                 }),
               ),
@@ -72,23 +102,26 @@ class ChatView extends StatelessWidget {
                 children: [
                   Expanded(
                     child: CustomTextField(
-                      controller: homeCon.messageController,
+                      controller: chatCon.messageController,
                       hint: 'Type your message...',
-                      onSubmit: (_) => homeCon.sendMessage(),
+                      onSubmit: (_) => chatCon.sendMessage(),
                     ),
                   ),
-                  SizedBox(width: 8.w,),
-                  Obx(() => CustomIconButton(
-                    iconPath: AppAssets.send,
-                    size: 22,
-                    iconColor: Colors.white,
-                    bgColor: AppColors.primary,
-                    onTap: homeCon.sendingMessage.value
-                        ? null
-                        : homeCon.sendMessage,
-                  )),
+                  SizedBox(width: 8.w),
+                  Obx(
+                        () =>
+                        CustomIconButton(
+                          iconPath: AppAssets.send,
+                          size: 22,
+                          iconColor: Colors.white,
+                          bgColor: AppColors.primary,
+                          onTap: chatCon.sendingMessage.value
+                              ? null
+                              : chatCon.sendMessage,
+                        ),
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),
