@@ -70,6 +70,7 @@ class LoginController extends GetxController {
 
       Utils.toastMessage('Login Successfully!');
       PrefManager.saveUser(loginResponse);
+      PrefManager.setToken(loginResponse.accessToken ?? '');
       PrefManager.setUserId(loginResponse.id.toString());
       Get.offAllNamed(Routes.HOME);
 

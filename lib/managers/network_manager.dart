@@ -62,22 +62,22 @@ class NetworkManager {
   }
 
   Future<String?> refreshToken() async {
-    // final refreshToken = PrefManager.getRefreshToken();
-    // if (refreshToken.isEmpty) return null;
-    //
-    // try {
-    //   final response = await dio.post(
-    //     AppUrls.refreshToken,
-    //     data: {'refreshToken': refreshToken},
-    //   );
-    //
-    //   if (response.statusCode == 200) {
-    //     final newToken = response.data['accessToken'];
-    //     return newToken;
-    //   }
-    // } catch (e) {
-    //   Get.offAllNamed(Routes.LOGIN);
-    // }
+    final refreshToken = PrefManager.getRefreshToken();
+    if (refreshToken.isEmpty) return null;
+
+    try {
+      final response = await dio.post(
+        AppUrls.refresh,
+        data: {'refreshToken': refreshToken},
+      );
+
+      if (response.statusCode == 200) {
+        final newToken = response.data['accessToken'];
+        return newToken;
+      }
+    } catch (e) {
+      Get.offAllNamed(Routes.LOGIN);
+    }
 
     return null;
   }

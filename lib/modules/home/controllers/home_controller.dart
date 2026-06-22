@@ -23,11 +23,7 @@ class HomeController extends GetxController {
     try {
       loadingDocs(true);
 
-      var params = {
-        'user_id': PrefManager.getUserId()
-      };
-
-      var response = await _api.getAllDocumentsApi(params: params);
+      var response = await _api.getAllDocumentsApi();
 
       if (response.isNotEmpty) {
         documents.value = response;
@@ -71,11 +67,7 @@ class HomeController extends GetxController {
         ),
       });
 
-      var params = {
-        'user_id': PrefManager.getUserId()
-      };
-
-      var response = await _api.uploadFileApi(params: params, formData: formData);
+      var response = await _api.uploadFileApi(formData: formData);
 
       if (response != null) {
         documents.insert(0, response);
@@ -94,7 +86,7 @@ class HomeController extends GetxController {
 
   Future<void> deleteDocument(int id) async {
     try {
-      var success = await _api.deleteFileApi(params: {'id': id, 'user_id': PrefManager.getUserId()});
+      var success = await _api.deleteFileApi(params: {'id': id});
 
       if (success) {
         documents.removeWhere((doc) => doc.id == id);
